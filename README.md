@@ -1,6 +1,7 @@
 # Ansible playbook and roles to create a simple Kubernetes cluster with kubeadm
-run ./deploy.sh to configured your nodes within k8s.
-the IP address definition could be changed at: ./roles/kubeadm_install/defaults/main.yml
+## Configuration
+1. run ./deploy.sh to configured your nodes within k8s.
+2. the IP address definition could be changed at: ./roles/kubeadm_install/defaults/main.yml
 #host IP
 master_ip: "10.10.20.57"
 worker1_ip: "10.10.20.58"
@@ -13,7 +14,7 @@ worker1: k8s-worker-1
 worker2: k8s-worker-2
 worker3: k8s-worker-3
 
-contiv version can be changed once it is updated:
+3. contiv version can be changed once it is updated:
 https://github.com/iceworld/ansible/blob/master/group_vars/all.yml
 #contiv version
 contiv_ver: 1.0.0-beta.3
@@ -33,7 +34,6 @@ This playbook assumes:
 * You are Ansible-knowledgable, can ssh into all the machines, and can sudo with no password prompt
 * Make sure your machines are time-synchronized, and that you understand their firewall configuration and status
 
-## Configuration
 
 1. Copy, rename, and edit the file INVENTORY-EXAMPLE
 2. Enter the FQDN of the machine assigned the role of Kubernetes master in the ```[master]``` group.
