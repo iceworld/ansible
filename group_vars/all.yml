@@ -1,0 +1,6 @@
+#SSH username/password
+ansible_ssh_user: root
+ansible_ssh_pass: cisco123
+
+#contiv version
+contiv_ver: 1.0.0-beta.3
