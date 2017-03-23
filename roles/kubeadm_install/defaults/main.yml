@@ -3,10 +3,10 @@
 kubeadm_services: []
 
 #host IP
-master_ip: "10.10.20.57"
-worker1_ip: "10.10.20.58"
-worker2_ip: "10.10.20.59"
-worker3_ip: "10.10.20.60"
+master_ip: "10.10.20.1"
+worker1_ip: "10.10.20.2"
+worker2_ip: "10.10.20.3"
+worker3_ip: "10.10.20.4"
 
 ##host name
 master: netmaster

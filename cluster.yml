@@ -134,6 +134,9 @@
   tasks:
 
     # Implements Step 4 of http://kubernetes.io/docs/getting-started-guides/kubeadm/
+    - wait_for:
+        port: 9999
+        delay: 10
 
     - name: Create Contiv default-net
       command: netctl net create --subnet=10.96.0.0/12 default-net 

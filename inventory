@@ -18,7 +18,7 @@ cluster_name=kubeadm_1
 #
 
 [master]
-10.10.20.57
+10.10.20.1
 #
 # The master group should have only ONE FQDN defined/specified
 #
@@ -28,8 +28,10 @@ cluster_name=kubeadm_1
 # If you need to specify a specific ip address for the master, uncomment the above and edit
 
 [nodes]
-10.10.20.57
-10.10.20.58
+10.10.20.1
+10.10.20.2
+10.10.20.3
+10.10.20.4
 #
 # FQDNs of hosts assigned the Kubernetes cluster node role
 #
