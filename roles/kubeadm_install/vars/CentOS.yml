@@ -1,11 +1,11 @@
 ---
 
-kubeadm_packages:
-  - docker
-  - kubelet
-  - kubeadm
-  - kubectl
-  - kubernetes-cni
+kubeadm_packages: []
+  #- docker
+  #- kubelet-1.5.4-0
+  #- kubeadm
+  #- kubectl-1.5.4-0
+  #- kubernetes-cni
 
 kubeadm_services:
   - docker
