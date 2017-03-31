@@ -60,6 +60,7 @@
   command: hostname {{ worker3 }}
   when:  ansible_default_ipv4.address  == "{{ worker3_ip }}"
   ignore_errors: true
+
 #add end
 #
 
@@ -68,6 +69,10 @@
     name: '{{ kubeadm_packages | list }}'
     state: latest
     update_cache: true
+
+- name: sycntime
+  command: ntpdate -s time.nist.gov
+  ignore_errors: true
 
 - name: Enable and start kubeadm services
   service:

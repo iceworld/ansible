@@ -1,6 +1,7 @@
 ---
 
-kubeadm_packages: []
+kubeadm_packages: 
+  - ntpdate
   #- docker
   #- kubelet-1.5.4-0
   #- kubeadm
