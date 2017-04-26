@@ -89,60 +89,6 @@
 - hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
   become: true
   tasks:
-    # Implements Step 4 of http://kubernetes.io/docs/getting-started-guides/kubeadm/
-
-    - name: Download contiv installer
-      command: "{{ item }}"
-      with_items:
-        - curl -L -O https://github.com/contiv/install/releases/download/{{ contiv_ver }}/contiv-{{ contiv_ver }}.tgz 
-        - tar zxf contiv-{{ contiv_ver }}.tgz
-      register: contiv_download
-      tags:
-        - master
-
-    - debug:
-        var: contiv_download.results
-
-- hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
-  become: true
-  tasks:
-    # Implements Step 4 of http://kubernetes.io/docs/getting-started-guides/kubeadm/
-    - name: Install contiv installer
-      command: "{{ item }}"
-      args: 
-        chdir: "/root/contiv-{{ contiv_ver }}"
-      with_items:
-        - ./install/k8s/install.sh -n {{  master_ip_address }}
-      register: pod_network
-      tags:
-        - master
-
-    - debug:
-        var: pod_network.results
-
-- hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
-
-  become: true
-
-  tasks:
-
-    # Implements Step 4 of http://kubernetes.io/docs/getting-started-guides/kubeadm/
-    - wait_for:
-        port: 9999
-        delay: 10
-
-    - name: Create Contiv default-net
-      command: netctl net create --subnet=10.96.0.0/12 --gateway=10.96.0.1 default-net 
-      register: create_network
-      tags:
-        - master
-
-    - debug:
-        var: create_network.stdout_lines
-
-- hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
-  become: true
-  tasks:
     # start kubectl proxy
     - name: start kubectl proxy
       command: kubectl proxy --address=0.0.0.0 --port=8001 --accept-hosts=^*$ &
@@ -155,8 +101,8 @@
 - hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
   become: true
   tasks:
-    # setup Kubernetes UI (Dashboard)
-    - name: setup Kubernetes Dashboard
+    # setup Kubernetes UI
+    - name: setup Kubernetes UI
       command: "{{ item }}"
       with_items:
         - curl -L -O  https://raw.githubusercontent.com/iceworld/ansible/master/kubernetes-dashboard.yaml
