@@ -70,7 +70,7 @@
     state: latest
     update_cache: true
 
-- name: sycntime
+- name: synctime to NTP server
   command: ntpdate -s time.nist.gov
   ignore_errors: true
 
