@@ -167,3 +167,41 @@
    
     - debug:
         var: kube_dashboard.results
+
+- hosts: "{{ hostvars.localhost.groups.master | join(',') }}"
+  become: true
+  tasks:
+    - pause:
+        seconds: 15
+    - name: probe dashboard status
+      shell: kubectl get pod -n kube-system | grep dashboard | awk '{print $3}'
+      register: podresult
+      ignore_errors: True
+      
+    - name: reset contiv network if dashboard not running
+      command: "{{ item }}"
+      args:
+        chdir: "/root/contiv-{{ contiv_ver }}"
+      with_items:
+         - ./install/k8s/uninstall.sh -n 10.10.20.1
+         - ./install/k8s/install.sh -n 10.10.20.1
+      register: reset_contiv
+      ignore_errors: True
+      when: podresult.stdout.find('Running')==-1
+      tags:
+        - master
+    - debug:
+        var: reset_contiv.results    
+
+    - name: reload dashboard if not running
+      command: "{{ item }}"
+      with_items:
+         - kubectl delete -f ./kubernetes-dashboard.yaml
+         - kubectl create -f ./kubernetes-dashboard.yaml
+      register: reset_dashboard
+      ignore_errors: True
+      tags:
+        - master
+      when: podresult.stdout.find('Running')==-1
+    - debug:
+        var: reset_dashboard.results
