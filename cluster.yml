@@ -163,6 +163,7 @@
       with_items:
         - curl -L -O  https://raw.githubusercontent.com/iceworld/ansible/master/kubernetes-dashboard.yaml
         - kubectl delete deployment/kube-dns -n kube-system
+        - kubectl delete svc kube-dns -n kube-system
         - kubectl create -f ./kubernetes-dashboard.yaml
       register: kube_dashboard
       ignore_errors: True
