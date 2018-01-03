@@ -1,5 +1,30 @@
-- name: Ensure bin_dir exists
-  file: path={{ bin_dir }} recurse=yes state=directory
+---
+- name: Install contiv installer
+  command: "{{ item }}"
+  args: 
+    chdir: "/root/contiv-{{ contiv_ver }}"
+  with_items:
+    - ./install/k8s/uninstall.sh -n 10.10.20.1 etcd-cleanup
+    - rm -rf /var/etcd/contiv-data
+    - ./install/k8s/install.sh -n 10.10.20.1
+  register: pod_network
+  ignore_errors: True
+  tags:
+    - master
 
-- include: download_bins.yml
+- debug:
+   var: pod_network.results
 
+- wait_for:
+   port: 9999
+   delay: 10
+
+- name: Create Contiv default-net
+  command: netctl net create --subnet=10.96.0.0/12 --gateway=10.96.0.1 default-net 
+  register: create_network
+  ignore_errors: True
+  tags:
+     - master
+
+- debug:
+   var: create_network.stdout_lines

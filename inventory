@@ -1,39 +1,17 @@
-#
-# Example Inventory file to describe/configure a Kubernetes cluster via kubeadm
-#
+[master]
+10.10.20.1
 
-[cluster]
+[nodes]
+10.10.20.[2:4]
 
 [cluster:children]
 master
 nodes
-#
-# The cluster group contains two subgroups: master and nodes
-#
 
 [cluster:vars]
 cluster_name=kubeadm_1
-#
-# cluster_name is used to store and retrieve the admission_token
-#
 
-[master]
-10.10.20.1
-#
-# The master group should have only ONE FQDN defined/specified
-#
+[devbox]
+10.10.20.20
 
-[master:vars]
-# master_ip_address_configured=1.2.3.4
-# If you need to specify a specific ip address for the master, uncomment the above and edit
 
-[nodes]
-10.10.20.1
-10.10.20.2
-10.10.20.3
-10.10.20.4
-#
-# FQDNs of hosts assigned the Kubernetes cluster node role
-#
-
-[nodes:vars]

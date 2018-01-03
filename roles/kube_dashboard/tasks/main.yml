@@ -1,0 +1,52 @@
+# setup Kubernetes UI (Dashboard)
+- name: setup Kubernetes Dashboard
+  command: "{{ item }}"
+  with_items:
+    - kubectl --kubeconfig /etc/kubernetes/admin.conf create -f ./kube-dashboard.yaml
+  register: kube_dashboard
+  ignore_errors: True
+- debug:
+    var: kube_dashboard.results
+
+
+- name: wait 60s for dashboard ready
+  pause:
+    seconds: 60
+
+- name: probe dashboard status
+  shell: kubectl --kubeconfig /etc/kubernetes/admin.conf get pod -n kube-system | grep dashboard | awk '{print $3}'
+  register: podresult
+  ignore_errors: True
+- debug:
+    var: podresult.stdout
+
+- name: probe contivh1 nodes
+  shell: ping 132.1.1.2 -c 3 && ping 132.1.1.3 -c 3 && ping 132.1.1.4 -c 3 && ping 132.1.1.5 -c 3
+  register: contivh1
+  ignore_errors: True
+- debug:
+    var: contivh1.stdout
+
+- name: reset contiv network if dashboard not running
+  command: "{{ item }}"
+  args:
+    chdir: "/root/contiv-{{ contiv_ver }}"
+  with_items:
+    - ./install/k8s/uninstall.sh -n 10.10.20.1
+    - ./install/k8s/install.sh -n 10.10.20.1
+  register: reset_contiv
+  ignore_errors: True
+  when: podresult.stdout.find('Running')==-1 or contivh1|failed
+- debug:
+    var: reset_contiv.results
+
+- name: reload dashboard if not running
+  command: "{{ item }}"
+  with_items:
+    - kubectl --kubeconfig /etc/kubernetes/admin.conf delete -f ./kube-dashboard.yaml
+    - kubectl --kubeconfig /etc/kubernetes/admin.conf create -f ./kube-dashboard.yaml
+  register: reset_dashboard
+  ignore_errors: True
+  when: podresult.stdout.find('Running')==-1 or contivh1|failed
+- debug:
+   var: reset_dashboard.results

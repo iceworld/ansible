@@ -41,6 +41,9 @@
     name: firewalld 
     state: stopped
 
+- name: disable swap
+  command: swapoff -a
+  
 - name: checkmaster
   command: hostname {{ master }}
   when:  ansible_default_ipv4.address   == "{{ master_ip }}"
@@ -62,7 +65,6 @@
   ignore_errors: true
 
 #add end
-#
 - name: Reset previous installation 
   command: "{{ item }}"
   with_items:
@@ -76,7 +78,7 @@
     state: latest
     update_cache: true
 
-- name: sycntime
+- name: synctime
   command: ntpdate -s 173.38.201.67
   ignore_errors: true
 

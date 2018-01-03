@@ -1,13 +1,39 @@
----
-# tasks file for kubeadm_install
+- name: kill kubectl proxy if there
+  command: ps -ef | grep [k]ubectl | awk {'print $2'} | xargs sudo kill -9
+  ignore_errors: true
+  no_log: True
+  tags:
+    - master
 
-- name: Include distribution specifc vars
-  include_vars: '{{ ansible_distribution }}.yml'
+#Implements Step 2 of http://kubernetes.io/docs/getting-started-guides/kubeadm/
+- name: Initialize master
+  command: kubeadm init --token {{ hostvars.localhost.admission_token }} --kubernetes-version v1.8.4 --skip-preflight-checks
+  args:
+    creates: /etc/kubernetes/pki
+  register: master_init
+  ignore_errors: true
+  tags:
+    - master
+    - init
+- debug:
+    var: master_init.stdout_lines
 
-- name: CentOS 7 install
-  include: CentOS.yml
-  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7'
+- name: set kubectl environment
+  command: "{{ item }}"
+  with_items:
+    - cp /etc/kubernetes/admin.conf $HOME/
+    - chmod a+rw $HOME/admin.conf
+  register: kubectl_env
+  tags:
+    - master
 
-- name: Ubuntu 16 install
-  include: Ubuntu.yml
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == '16'
+- name: backup certs to local
+  fetch:
+    src: /root/admin.conf
+    dest: /root/
+    flat: yes
+    mode: 0666
+  tags:
+    - master
+- debug:
+    var: kubectl_env.results
