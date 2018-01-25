@@ -4,9 +4,9 @@
   args: 
     chdir: "/root/contiv-{{ contiv_ver }}"
   with_items:
-    - ./install/k8s/uninstall.sh -n 10.10.20.1 etcd-cleanup
+    - ./install/k8s/uninstall.sh -n {{ master_ip }} etcd-cleanup
     - rm -rf /var/etcd/contiv-data
-    - ./install/k8s/install.sh -n 10.10.20.1
+    - ./install/k8s/install.sh -n {{ master_ip }}
   register: pod_network
   ignore_errors: True
   tags:

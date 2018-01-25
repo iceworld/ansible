@@ -1,2 +1,0 @@
-- name: GF_SERVER_ROOT_URL
-          value: /api/v1/proxy/namespaces/istio-system/services/grafana:3000/

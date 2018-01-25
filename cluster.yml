@@ -46,11 +46,8 @@
 - hosts: nodes
   become: true
   tasks:
-    - set_fact:
-        master_ip_address: 10.10.20.1
-
     - name: Join nodes to cluster
-      command: kubeadm join --token {{ hostvars.localhost.admission_token }} {{  master_ip_address }}:6443 --skip-preflight-checks 
+      command: kubeadm join --token {{ hostvars.localhost.admission_token }} {{  master_ip }}:6443 --skip-preflight-checks 
       args:
         creates: /etc/kubernetes/kubelet.conf
       register: node_join
